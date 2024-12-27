@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"app\\\\layout\\\\edit\\\\[id]\\\\page.tsx -> quill\":{\"id\":\"app\\\\layout\\\\edit\\\\[id]\\\\page.tsx -> quill\",\"files\":[\"static/chunks/_app-pages-browser_node_modules_pnpm_quill_2_0_3_node_modules_quill_quill_js.js\"]}}"
