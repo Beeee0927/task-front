@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffectProp } from '@/app/utils/tolls'
+import { useEffectProp } from '@/app/utils/tools'
 import { useLocalStore } from '@/app/store'
 import { Avatar as AntdAvatar } from 'antd'
 import { UserOutlined } from '@ant-design/icons'

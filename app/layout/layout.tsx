@@ -25,7 +25,7 @@ export default function RootLayout({
         </div>
         <UserAvatar />
       </div>
-      <div className="flex flex-grow">
+      <div className="flex flex-grow overflow-y-hidden">
         <Menu
           style={{
             width: 'calc(100px + 8vw)',
@@ -39,7 +39,7 @@ export default function RootLayout({
           mode="inline"
           items={items}
         />
-        <div className=" px-12 pt-6 flex-grow">{children}</div>
+        <div className="px-12 pt-6 flex-grow overflow-y-scroll">{children}</div>
       </div>
     </div>
   )

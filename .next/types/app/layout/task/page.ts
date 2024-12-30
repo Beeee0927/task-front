@@ -1,4 +1,4 @@
-// File: C:\Users\Beeee\Desktop\task_front\app\layout\task\page.tsx
+// File: C:\Users\Beeee\Desktop\task-front\app\layout\task\page.tsx
 import * as entry from '../../../../../app/layout/task/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

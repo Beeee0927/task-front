@@ -33,7 +33,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var next_dist_build_webpack_loaders_next_flight_loader_module_proxy__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! next/dist/build/webpack/loaders/next-flight-loader/module-proxy */ "(rsc)/./node_modules/.pnpm/next@14.2.21_react-dom@18.3.1_react@18.3.1__react@18.3.1_sass@1.83.0/node_modules/next/dist/build/webpack/loaders/next-flight-loader/module-proxy.js");
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,next_dist_build_webpack_loaders_next_flight_loader_module_proxy__WEBPACK_IMPORTED_MODULE_0__.createProxy)(String.raw`C:\Users\Beeee\Desktop\task_front\node_modules\.pnpm\@ant-design+nextjs-registry@1.0.2_@ant-design+cssinjs@1.22.1_react-dom@18.3.1_react@18.3.1__r_2mwnaqc2cs6r2fazk7g2ajm44q\node_modules\@ant-design\nextjs-registry\es\AntdRegistry.js#default`));
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,next_dist_build_webpack_loaders_next_flight_loader_module_proxy__WEBPACK_IMPORTED_MODULE_0__.createProxy)(String.raw`C:\Users\Beeee\Desktop\task-front\node_modules\.pnpm\@ant-design+nextjs-registry@1.0.2_@ant-design+cssinjs@1.22.1_react-dom@18.3.1_react@18.3.1__r_2mwnaqc2cs6r2fazk7g2ajm44q\node_modules\@ant-design\nextjs-registry\es\AntdRegistry.js#default`));
 
 
 /***/ }),

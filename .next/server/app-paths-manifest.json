@@ -1,7 +1,8 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/layout/message/page": "app/layout/message/page.js",
+  "/login/page": "app/login/page.js",
+  "/layout/detail/[id]/page": "app/layout/detail/[id]/page.js",
   "/layout/task/page": "app/layout/task/page.js",
+  "/layout/message/page": "app/layout/message/page.js",
   "/layout/edit/[id]/page": "app/layout/edit/[id]/page.js"
 }

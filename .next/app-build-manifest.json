@@ -1,9 +1,15 @@
 {
   "pages": {
-    "/page": [
+    "/layout/detail/[id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/css/app/layout/detail/[id]/page.css",
+      "static/chunks/app/layout/detail/[id]/page.js"
+    ],
+    "/layout/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/layout/layout.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,20 +17,15 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/layout/message/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/layout/message/page.js"
-    ],
-    "/layout/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/layout/layout.js"
-    ],
     "/layout/task/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/layout/task/page.js"
+    ],
+    "/layout/message/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/layout/message/page.js"
     ],
     "/layout/edit/[id]/page": [
       "static/chunks/webpack.js",
@@ -32,10 +33,15 @@
       "static/css/app/layout/edit/[id]/page.css",
       "static/chunks/app/layout/edit/[id]/page.js"
     ],
-    "/layout/detail/[id]/page": [
+    "/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/layout/detail/[id]/page.js"
+      "static/chunks/app/login/page.js"
+    ],
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
     ],
     "/_not-found/page": [
       "static/chunks/webpack.js",
