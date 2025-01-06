@@ -17,23 +17,43 @@ async function request(url: string, init?: RequestInit) {
     message.error(res.statusText)
     if (res.status === 401) useRouterStore.getState().trigger()
   }
-  return res.json()
+  return res
 }
 
-export function get(url: string, params?: Record<string, any>) {
+export async function download(url: string, params?: Record<string, any>) {
   const queryString = new URLSearchParams(params).toString()
-  return request(url + (params ? '?' + queryString : ''))
+  const res = await request(url + (params ? '?' + queryString : ''))
+
+  const filename = res.headers.get('filename')
+  const blob = await res.blob()
+  return new File([blob], filename ?? 'file', { type: blob.type })
 }
 
-export function post(url: string, data: object) {
-  return request(url, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' }
-  })
+async function parseJson(response: Promise<Response>) {
+  return (await response).json() as Promise<{
+    status: number
+    message: string
+    code: number
+    data: { [key: string]: any }
+  }>
 }
 
-export function formPost(url: string, data: object) {
+export async function get(url: string, params?: Record<string, any>) {
+  const queryString = new URLSearchParams(params).toString()
+  return parseJson(request(url + (params ? '?' + queryString : '')))
+}
+
+export async function post(url: string, data: object) {
+  return parseJson(
+    request(url, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' }
+    })
+  )
+}
+
+export async function formPost(url: string, data: object) {
   const formData = new FormData()
   Object.entries(data).forEach(([key, value]) => {
     if (Array.isArray(value)) {
@@ -45,8 +65,10 @@ export function formPost(url: string, data: object) {
     }
   })
 
-  return request(url, {
-    method: 'POST',
-    body: formData
-  })
+  return parseJson(
+    request(url, {
+      method: 'POST',
+      body: formData
+    })
+  )
 }

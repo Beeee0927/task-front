@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Button, message, Modal, Tabs } from 'antd'
+import { Button, message, Modal } from 'antd'
 import { useLocalStore } from '@/app/store'
 import { useParams, useRouter } from 'next/navigation'
 import { api_getTaskDetail } from '../../task/api'
@@ -10,7 +10,8 @@ import 'quill/dist/quill.snow.css'
 import './page.scss'
 import { CloseOutlined } from '@ant-design/icons'
 import { api_addAns, api_getAns, getUsers } from './api'
-import { useSkipFirstEffect } from '@/app/utils/tools'
+import { downloadFiles } from '@/app/api'
+import Tabs from '../(components)/Tabs'
 
 export default function Detail() {
   const [deadline, setDeadline] = useState<Dayjs | string | null>(null)
@@ -19,7 +20,7 @@ export default function Detail() {
   const quill = useRef<any>(null)
   const quillInitRef = useRef<any>(null)
   const router = useRouter()
-  const id = useParams().id
+  const id = useParams().id as string
 
   const [ansContent, setAnsContent] = useState('')
   const [ansContentHtml, setAnsContentHtml] = useState('')
@@ -32,23 +33,38 @@ export default function Detail() {
     if (role === 'admin') setDiabled(true)
   }, [role])
 
+  const [items, setItems] = useState([])
+  if (role === 'admin') {
+    useEffect(() => {
+      getUsers({}).then((res: any) => {
+        setItems(
+          res.data.map(({ username, _id }: any) => ({
+            label: username,
+            key: _id
+          }))
+        )
+        refresh(res.data[0]._id)
+      })
+    }, [])
+  }
+
+  const lastActiveKey = useRef('')
+  const [activeKey, setActiveKey] = useState('')
   function refresh(userId?: string) {
-    api_getAns({ taskId: id, userId }).then(async (res: any) => {
+    api_getAns({ taskId: id, userId }).then(async (res) => {
+      if (res.code === 1) {
+        message.error(res.message)
+        return setActiveKey(lastActiveKey.current)
+      }
+      lastActiveKey.current = id
+
       const { content, files, status } = res.data
 
       await quillInitRef.current
       quill.current.setContents(content)
       if (role === 'admin') quill.current.disable()
-      console.log(files)
-      setFiles(
-        files?.map(({ blob, originalname, mimetype }: any) => {
-          console.log(blob)
-          // const blob = new Blob([base64], { type: mimetype })
-          return new File([blob], originalname, { type: mimetype })
-        }) ?? []
-      )
-      console.log(files[0].buffer instanceof Uint8Array)
       setStatus(status)
+      downloadFiles(files).then(setFiles)
     })
   }
 
@@ -108,30 +124,9 @@ export default function Detail() {
     })
   }
 
-  const [items, setItems] = useState([])
-  if (role === 'admin') {
-    useEffect(() => {
-      getUsers({}).then((res: any) => {
-        setItems(
-          res.data.map(({ username, _id }: any) => ({
-            label: username,
-            key: _id
-          }))
-        )
-        refresh(res.data[0]._id)
-      })
-    }, [])
-  }
-
-  function downloadFile(file: File) {
-    console.log(file)
-    const url = URL.createObjectURL(file)
-    window.open(url)
-  }
-
   return (
     <div>
-      <Tabs items={items} style={{ marginBottom: '20px' }} onChange={refresh} />
+      <Tabs onChange={refresh} />
       <div className="w-fit mx-auto min-w-[800px] bg-blue-50 p-10 rounded-md">
         <div className="text-4xl font-bold mb-4 w-fit">{title}</div>
         <div className="mb-4 flex flex-row-reverse">
@@ -160,7 +155,7 @@ export default function Detail() {
                 className="w-40 h-10 text-center leading-10 p-0 px-3 bg-white rounded-md ml-2 mb-2 text-sm flex items-center justify-between hover:cursor-pointer "
                 key={idx}
                 onClick={() => {
-                  downloadFile(files[idx])
+                  // downloadFile(files[idx])
                 }}
               >
                 <div className="whitespace-nowrap overflow-hidden text-ellipsis mr-2">

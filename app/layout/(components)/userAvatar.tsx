@@ -1,11 +1,20 @@
 'use client'
 
-import { useEffectProp } from '@/app/utils/tools'
-import { useLocalStore } from '@/app/store'
 import { Avatar as AntdAvatar } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
+import { useRouter } from 'next/navigation'
 
 export default function UserAvatar() {
-  // const avatar = useEffectProp(useLocalStore, 'avatar')
-  return <AntdAvatar size={36} icon={<UserOutlined />} />
+  const router = useRouter()
+
+  return (
+    <AntdAvatar
+      size={32}
+      icon={<UserOutlined />}
+      className="cursor-pointer"
+      onClick={() => {
+        router.push('/login')
+      }}
+    />
+  )
 }
