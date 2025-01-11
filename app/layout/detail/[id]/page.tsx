@@ -11,7 +11,7 @@ import './page.scss'
 import { CloseOutlined } from '@ant-design/icons'
 import { api_addAns, api_getAns, getUsers } from './api'
 import { downloadFiles } from '@/app/api'
-import Tabs from '../(components)/Tabs'
+import Tabs from './(components)/Tabs'
 
 export default function Detail() {
   const [deadline, setDeadline] = useState<Dayjs | string | null>(null)
@@ -189,7 +189,6 @@ export default function Detail() {
           {status === 'grading' ? '修改作答' : '提交作答'}
         </Button>
       </div>
-
       <Modal
         title="上传附件"
         open={isModalOpen}
