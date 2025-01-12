@@ -3,11 +3,13 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 import { getInitialState } from './tools'
 
 interface LocalStore {
+  sessionId: string
   userId: string
   username: string
   role: 'user' | 'admin'
   deptName: 'frontEnd' | 'backEnd'
   setData: (data: {
+    sessionId: string
     userId: string
     username: string
     role: 'user' | 'admin'
@@ -22,12 +24,14 @@ export const useLocalStore = create<
   persist(
     (set) => ({
       ...getInitialState('local', {
+        sessionId: '',
         userId: '',
         username: '',
         role: 'user',
         deptName: 'frontEnd'
       }),
       setData: (data: {
+        sessionId: string
         userId: string
         username: string
         role: 'user' | 'admin'

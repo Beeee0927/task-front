@@ -12,7 +12,7 @@ async function request(url: string, init?: RequestInit) {
     ...init,
     headers: {
       ...init?.headers,
-      sessionId: useLocalStore.getState().userId.toString()
+      sessionId: useLocalStore.getState().sessionId.toString()
     }
   })
 
