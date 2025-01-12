@@ -20,7 +20,7 @@ export default function Login() {
       .then(({ code, message, data }) => {
         if (code) antMessage.error(message)
         else {
-          setData(data)
+          setData(data as any)
           antMessage.success(message)
           router.push('/')
         }

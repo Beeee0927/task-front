@@ -2,7 +2,10 @@ import { message } from 'antd'
 import { useLocalStore } from '../store'
 import { useRouterStore } from '../store'
 
-const baseUrl = 'http://localhost:8000'
+let baseUrl = 'http://localhost:8000'
+if (process.env.NODE_ENV === 'production') {
+  baseUrl = 'http://122.51.255.180:8000'
+}
 
 async function request(url: string, init?: RequestInit) {
   const res = await fetch(baseUrl + url, {

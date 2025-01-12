@@ -3,9 +3,13 @@
 import { Menu as AntdMenu, MenuProps } from 'antd'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { useMenuStore } from '@/app/store'
+import { useEffect, useMemo } from 'react'
+import { useDefer } from '@/app/utils/tools'
 
 export default function Menu() {
-  const pathname = usePathname()
+  const isDeferred = useDefer()
+
   type MenuItem = Required<MenuProps>['items'][number]
   const commonItems: (MenuItem & { key: string })[] = [
     {
@@ -25,6 +29,13 @@ export default function Menu() {
   // const adminItems: MenuItem[] = []
   const items: MenuItem[] = [...commonItems]
 
+  const { activeKey, setActiveKey } = useMenuStore()
+  const availableKeys = useMemo(() => items.map((item) => item?.key), [])
+  const pathname = usePathname()
+  useEffect(() => {
+    if (availableKeys.includes(pathname)) setActiveKey(pathname)
+  }, [pathname])
+
   return (
     <AntdMenu
       style={{
@@ -34,7 +45,7 @@ export default function Menu() {
         backgroundColor: '#00000001',
         boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.1)'
       }}
-      defaultSelectedKeys={[pathname]}
+      selectedKeys={!isDeferred ? [] : [activeKey]}
       mode="inline"
       items={items}
     />

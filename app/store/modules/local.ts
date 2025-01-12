@@ -1,28 +1,18 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+import { getInitialState } from './tools'
 
 interface LocalStore {
-  userId: number
+  userId: string
   username: string
   role: 'user' | 'admin'
   deptName: 'frontEnd' | 'backEnd'
   setData: (data: {
-    userId: number
+    userId: string
     username: string
     role: 'user' | 'admin'
     deptName: 'frontEnd' | 'backEnd'
   }) => void
-}
-
-function getInitialState(name: string, defaultValue: object) {
-  try {
-    return {
-      ...defaultValue,
-      ...JSON.parse(localStorage.getItem(name)!).state
-    }
-  } catch {
-    return defaultValue
-  }
 }
 
 export const useLocalStore = create<
@@ -32,13 +22,13 @@ export const useLocalStore = create<
   persist(
     (set) => ({
       ...getInitialState('local', {
-        userId: 0,
+        userId: '',
         username: '',
         role: 'user',
         deptName: 'frontEnd'
       }),
       setData: (data: {
-        userId: number
+        userId: string
         username: string
         role: 'user' | 'admin'
         deptName: 'frontEnd' | 'backEnd'
@@ -47,7 +37,6 @@ export const useLocalStore = create<
     {
       name: 'local',
       storage: createJSONStorage(() => localStorage)
-      // skipHydration: true
     }
   )
 )

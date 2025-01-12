@@ -28,3 +28,28 @@ export const useSkipFirstEffect = (
     effect()
   }, deps)
 }
+
+export function useDeferredState<T>({
+  value,
+  initValue,
+  withSet
+}: {
+  value: T
+  initValue?: T
+  withSet?: boolean
+}) {
+  const [state, setState] = useState<T | undefined>(initValue)
+  useEffect(() => {
+    setState(value)
+  }, [])
+  if (withSet) return [state, setState]
+  return state
+}
+
+export const useDefer = (initValue?: boolean) => {
+  const [isDeferred, setIsDeferred] = useState(initValue ?? false)
+  useEffect(() => {
+    setIsDeferred(!isDeferred)
+  }, [])
+  return isDeferred
+}

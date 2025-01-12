@@ -5,5 +5,5 @@ export const downloadFile = (id: string) => {
 }
 
 export const downloadFiles = (ids: string[]) => {
-  return Promise.all(ids.map((id) => downloadFile(id)))
+  return Promise.all(ids?.map((id) => downloadFile(id)))
 }
