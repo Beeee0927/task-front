@@ -24,7 +24,8 @@ export default function Detail() {
   const taskId = useParams().taskId as string
   const { role } = useLocalStore()
 
-  const [{ deadline, title, content }, setTaskData] = useImmer<any>({})
+  const [{ deadline, title, content, contentHtml }, setTaskData] =
+    useImmer<any>({})
   const quill = useRef<any>(null)
   const quillInitRef = useRef<any>(null)
 
@@ -171,7 +172,7 @@ export default function Detail() {
           </div>
         </div>
         <div
-          dangerouslySetInnerHTML={{ __html: content }}
+          dangerouslySetInnerHTML={{ __html: contentHtml }}
           className="w-fit mb-10"
         />
         <div id="editor"></div>
