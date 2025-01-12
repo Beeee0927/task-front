@@ -5,40 +5,40 @@ import { Button, message, Modal, Progress, ProgressProps, Tooltip } from 'antd'
 import { useLocalStore } from '@/app/store'
 import { useParams, useRouter } from 'next/navigation'
 import { api_getTaskDetail } from '../../task/api'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import 'quill/dist/quill.snow.css'
 import './page.scss'
-import { api_addAns, api_getAns, api_getUsers } from './api'
+import { api_addAns, api_getAns } from './api'
 import { downloadFiles } from '@/app/api'
 import Tabs from './(components)/Tabs'
 import Files from './(components)/Files'
 import { useDefer } from '@/app/utils/tools'
 import UploadModal from './(components)/UploadModal'
 import ReviewModal from './(components)/ReviewModal'
+import { useImmer } from 'use-immer'
 
 export default function Detail() {
   const isDeferred = useDefer()
 
-  const [deadline, setDeadline] = useState<Dayjs | string | null>(null)
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const quill = useRef<any>(null)
-  const quillInitRef = useRef<any>(null)
   const router = useRouter()
   const taskId = useParams().taskId as string
-
-  const [files, setFiles] = useState<File[]>([])
-  const [status, setStatus] = useState('')
-  const [score, setScore] = useState(0)
-  const [comment, setComment] = useState('')
   const { role } = useLocalStore()
-  const curUserId = useRef('')
+
+  const [{ deadline, title, content }, setTaskData] = useImmer<any>({})
+  const quill = useRef<any>(null)
+  const quillInitRef = useRef<any>(null)
+
+  const [ansData, setAnsData] = useImmer<any>({})
+  const { status, score, files, comment, curUserId } = ansData
 
   async function refresh(userId?: string) {
-    curUserId.current = userId ?? ''
-    setFiles([])
-    setScore(0)
-    setComment('')
+    setAnsData({
+      status: undefined,
+      score: -1,
+      files: [],
+      comment: '',
+      curUserId: userId ?? ''
+    })
 
     if (!userId) {
       await quillInitRef.current
@@ -51,9 +51,7 @@ export default function Detail() {
     res.then(async (res) => {
       if (res.code === 1) {
         if (role === 'admin') {
-          setScore(score)
-          setComment(comment)
-          setFiles(files)
+          setAnsData(ansData)
           message.error(res.message)
         }
         return
@@ -61,8 +59,8 @@ export default function Detail() {
 
       const {
         content,
+        status: newStatus,
         files: newFiles,
-        status,
         score: newScore,
         comment: newComment
       } = res.data
@@ -70,10 +68,18 @@ export default function Detail() {
       await quillInitRef.current
       quill.current.setContents(content)
       if (role === 'admin') quill.current.disable()
-      setStatus(status)
-      setScore(newScore)
-      setComment(newComment)
-      downloadFiles(newFiles).then(setFiles)
+      // downloadFiles(newFiles).then(setFiles)
+      setAnsData((draft) => {
+        draft.status = newStatus
+        draft.files = newFiles
+        draft.score = newScore
+        draft.comment = newComment
+      })
+      downloadFiles(newFiles).then((files) =>
+        setAnsData((draft) => {
+          draft.files = files
+        })
+      )
     })
     return res
   }
@@ -91,9 +97,7 @@ export default function Detail() {
 
       api_getTaskDetail({ id: taskId }).then((res: any) => {
         const { title, deadline, contentHtml } = res.data
-        setTitle(title)
-        setDeadline(deadline)
-        setContent(contentHtml)
+        setTaskData({ deadline, title, contentHtml })
       })
 
       if (role === 'user') refresh()
@@ -133,9 +137,11 @@ export default function Detail() {
     '100%': '#108ee9'
   }
 
+  const [reviewEvent, setReviewEvent] = useState(0)
+
   return (
     <div>
-      <Tabs refresh={refresh} />
+      <Tabs refresh={refresh} reviewEvent={reviewEvent} />
       <div className="w-fit mx-auto min-w-[800px] bg-blue-50 p-10 rounded-md">
         <div className="flex justify-between">
           <div className="text-4xl font-bold mb-4 w-fit">{title}</div>
@@ -152,7 +158,7 @@ export default function Detail() {
               strokeColor={conicColors}
               style={{
                 transform: 'translateY(-20px)',
-                visibility: score ? 'visible' : 'hidden',
+                visibility: score >= 0 ? 'visible' : 'hidden',
                 cursor: 'pointer'
               }}
               format={(e) => e + '分'}
@@ -173,7 +179,11 @@ export default function Detail() {
         <Files
           setIsModalOpen={setIsUploadModalOpen}
           files={files}
-          setFiles={setFiles}
+          setFiles={(files) =>
+            setAnsData((draft) => {
+              draft.files = files
+            })
+          }
         />
 
         {isDeferred && (
@@ -188,7 +198,7 @@ export default function Detail() {
                 {status === 'grading' ? '修改作答' : '提交作答'}
               </Button>
             )}
-            {role === 'admin' && curUserId.current && (
+            {role === 'admin' && curUserId && (
               <Button
                 type="primary"
                 size="large"
@@ -206,13 +216,18 @@ export default function Detail() {
         isModalOpen={isUploadModalOpen}
         setIsModalOpen={setIsUploadModalOpen}
         files={files}
-        setFiles={setFiles}
+        setFiles={(files) =>
+          setAnsData((draft) => {
+            draft.files = files
+          })
+        }
       />
       <ReviewModal
-        userId={curUserId.current}
+        userId={curUserId}
         isModalOpen={isReviewModalOpen}
         setIsModalOpen={setIsReviewModalOpen}
         refresh={refresh}
+        setReviewEvent={setReviewEvent}
       />
     </div>
   )

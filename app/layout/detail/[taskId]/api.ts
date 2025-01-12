@@ -15,3 +15,7 @@ export const api_getUsers = async (data?: any) => {
 export const api_addReview = async (data?: any) => {
   return post('/addReview', data)
 }
+
+export const api_getTaskBadges = async (data?: any) => {
+  return post('/getTaskBadges', data)
+}

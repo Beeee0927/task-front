@@ -1,31 +1,54 @@
 import { useEffect, useRef, useState } from 'react'
-import { api_getUsers } from '../api'
+import { api_getTaskBadges, api_getUsers } from '../api'
 import { useLocalStore } from '@/app/store'
-import { Tabs as AntdTabs } from 'antd'
+import { Tabs as AntdTabs, Badge } from 'antd'
 import { useDefer } from '@/app/utils/tools'
+import { useParams } from 'next/navigation'
 
-export default function Tabs({ refresh }: any) {
+export default function Tabs({ refresh, reviewEvent }) {
   const isDeferred = useDefer()
 
   const { role } = useLocalStore()
   const isAdmin = role === 'admin'
+  const { taskId } = useParams()
 
   const [items, setItems] = useState<any[]>([])
 
-  useEffect(() => {
-    if (isAdmin) {
+  const [ansState, setAnsState] = useState<any>([])
+
+  if (isAdmin) {
+    useEffect(() => {
+      api_getTaskBadges({ taskId }).then((res) => {
+        setAnsState(res.data as any[])
+      })
+    }, [reviewEvent])
+
+    useEffect(() => {
       api_getUsers().then((res: any) => {
         setItems(
           [{ label: '仅题目', key: '' }].concat(
             res.data.map(({ username, _id }: any) => ({
-              label: username,
+              label: (() => {
+                const { grading = [], finished = [] } = ansState
+                const concatedArr = grading.concat(finished)
+                return (
+                  <Badge
+                    dot
+                    color={grading.includes(_id) ? 'red' : 'green'}
+                    count={+concatedArr.includes(_id)}
+                    offset={[2, 0]}
+                  >
+                    {username}
+                  </Badge>
+                )
+              })(),
               key: _id
             }))
           )
         )
       })
-    }
-  }, [])
+    }, [ansState])
+  }
 
   const [activeKey, setActiveKey] = useState('')
   const lastActiveKey = useRef('')

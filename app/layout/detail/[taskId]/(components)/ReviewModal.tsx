@@ -7,7 +7,8 @@ export default function ReviewModal({
   userId,
   isModalOpen,
   setIsModalOpen,
-  refresh
+  refresh,
+  setReviewEvent
 }) {
   const [score, setScore] = useState(0)
   const [comment, setComment] = useState('')
@@ -27,6 +28,7 @@ export default function ReviewModal({
       setIsModalOpen(false)
       setLoading(false)
       refresh(userId)
+      setReviewEvent((x) => x + 1)
     })
   }
 

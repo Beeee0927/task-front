@@ -23,6 +23,12 @@ export default function Menu() {
       get label() {
         return <Link href={this.key}>任务列表</Link>
       }
+    },
+    {
+      key: '/layout/user',
+      get label() {
+        return <Link href={this.key}>重置密码</Link>
+      }
     }
   ]
   // const userItems: MenuItem[] = []
